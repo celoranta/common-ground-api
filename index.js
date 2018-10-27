@@ -40,8 +40,12 @@ app.get('/songs', (req, res) => {
   res.sendFile(songs);
 })
 
-// POST route from contact form
-// 
+app.put('/songs', (req, res) => {
+  console.log(req.body);
+//
+  //res.sendFile(songs);
+})
+
 
 // 404
 app.use(function(req, res, next) {
