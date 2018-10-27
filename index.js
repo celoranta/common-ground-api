@@ -19,6 +19,7 @@ var hostname = "localhost";
 //  var publicFolder = path.join(__dirname + '/public');
 
 var apiLanding = path.join(__dirname + '/views/landing.html');
+var songs = path.join(__dirname + '/objects/songs.json');
 // var temperror = path.join(__dirname + '/views/temp-error.html');
 // var tempsuccess = path.join(__dirname + '/views/temp-success.html');
 
@@ -34,6 +35,10 @@ app.use(bodyparser.urlencoded({ extended: true }))
 app.get('/', (req, res) => {
   res.sendFile(apiLanding);
 });
+
+app.get('/songs', (req, res) => {
+  res.sendFile(songs);
+})
 
 // POST route from contact form
 // 
