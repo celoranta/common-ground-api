@@ -42,8 +42,7 @@ app.get('/songs', (req, res) => {
 
 app.put('/songs', (req, res) => {
   console.log(req.body);
-//
-  //res.sendFile(songs);
+  res.sendFile(apiLanding);
 })
 
 
