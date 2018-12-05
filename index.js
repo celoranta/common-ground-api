@@ -1,64 +1,45 @@
 
-//Include frameworks
-const fs = require('fs');
-const url = require('url');
-const express = require('express');
-const path = require('path');
-const bodyparser = require('body-parser');
-require('dotenv').config(); // For reading .env variables
-//const nodemailer = require('nodemailer');
+const webServer = require('./services/web-server.js');
+async function startup() {
+  console.log('Starting application');
+  try {
+    console.log('Initializing web server module');
+    await webServer.initialize();
+  } catch (err) {
+    console.error(err);
+    process.exit(1); // Non-zero failure code
+  }
+}
+startup();
 
-//Instantiate managers
-var app = express();
 
-//Assign variables
-var httpPort = process.env.PORT || 8000;
-var hostname = "localhost";
-
-//Create filepaths
-//  var publicFolder = path.join(__dirname + '/public');
-
-var apiLanding = path.join(__dirname + '/views/landing.html');
-var songs = path.join(__dirname + '/objects/songs.json');
-// var temperror = path.join(__dirname + '/views/temp-error.html');
-// var tempsuccess = path.join(__dirname + '/views/temp-success.html');
-
-//Static Routes
-// app.use(express.static(publicFolder));
-//Tell express to use body parser and not parse extended bodies directly
-app.use(bodyparser.urlencoded({ extended: true }))
-
-//Standard Routes
-// app.get('/', (req, res) => {
-//   res.sendFile(homePage);
-// });
-app.get('/', (req, res) => {
-  res.sendFile(apiLanding);
+async function shutdown(e) {
+  let err = e;
+  console.log('Shutting down');
+  try {
+    console.log('Closing web server module');
+    await webServer.close();
+  } catch (e) {
+    console.log('Encountered error', e);
+    err = err || e;
+  }
+  console.log('Exiting process');
+  if (err) {
+    process.exit(1); // Non-zero failure code
+  } else {
+    process.exit(0);
+  }
+}
+process.on('SIGTERM', () => {
+  console.log('Received SIGTERM');
+  shutdown();
 });
-
-app.get('/songs', (req, res) => {
-  res.sendFile(songs);
-})
-
-app.put('/songs', (req, res) => {
-  console.log(req.body);
-  res.sendFile(apiLanding);
-})
-
-
-// 404
-app.use(function(req, res, next) {
-  return res.status(404).send({ message: 'Route '+req.url+' Not found.' });
+process.on('SIGINT', () => {
+  console.log('Received SIGINT');
+  shutdown();
 });
-
-// 500 - Any server error
-app.use(function(err, req, res, next) {
-  return res.status(500).send({ error: err });
+process.on('uncaughtException', err => {
+  console.log('Uncaught exception');
+  console.error(err);
+  shutdown(err);
 });
-
-app.listen(httpPort);
-
-
-
-
-
