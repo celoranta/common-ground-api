@@ -5,6 +5,8 @@ const http = require('http');
 const express = require('express');
 const morgan = require('morgan');
 const webServerConfig = require('../config/web-server.js');
+const musicStory = require('../MusicStoryAPI.class')
+
 //const path = require('path');
 
 //var songsList = path.join(__dirname + '../objects/songs.json');
